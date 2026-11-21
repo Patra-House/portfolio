@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>पत्र House | Premium Studio</title>
+    <style>
+        /* --- 1. CORE VARIABLES --- */
+        :root {
+            --bg-deep: #050505;
+            --text-gold: #e8c688;
+            --text-white: #ffffff;
+            --text-grey: #a0a0a0;
+            
+            /* GLASS SETTINGS */
+            --glass-header: rgba(10, 10, 10, 0.4); 
+            --glass-header-blur: 40px;
+            --glass-panel: rgba(20, 20, 20, 0.6);
+            --border-light: rgba(255, 255, 255, 0.08);
+            
+            /* ANIMATION */
+            --ease-smooth: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background-color: var(--bg-deep);
+            color: var(--text-white);
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            overflow-x: hidden;
+        }
+
+        /* --- 2. AURORA BACKGROUND --- */
+        .aurora-container {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            z-index: -1; overflow: hidden; background: #050505;
+        }
+        .orb {
+            position: absolute; border-radius: 50%;
+            filter: blur(140px); opacity: 0.6;
+            animation: float 20s infinite alternate ease-in-out;
+        }
+        .orb-1 { top: -20%; left: -20%; width: 80vw; height: 80vw; background: #2e0f45; }
+        .orb-2 { bottom: -10%; right: -10%; width: 70vw; height: 70vw; background: #3d230b; animation-delay: -5s; }
+        @keyframes float {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(30px, 20px); }
+        }
+
+        /* --- 3. LIFTING HEADER --- */
+        .floating-header {
+            position: absolute; top: 25px; left: 50%; transform: translateX(-50%);
+            width: 95%; max-width: 1400px; height: 110px;
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 0 40px; z-index: 1000;
+            background: linear-gradient(180deg, rgba(255,255,255,0.03) 0%, rgba(0,0,0,0.3) 100%);
+            backdrop-filter: blur(var(--glass-header-blur)); -webkit-backdrop-filter: blur(var(--glass-header-blur));
+            border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 24px;
+            transition: transform 1.2s var(--ease-smooth), opacity 1.2s ease;
+        }
+        .header-lifted { position: fixed; transform: translate(-50%, -200%); opacity: 0; pointer-events: none; }
+
+        .header-profile { display: flex; align-items: center; gap: 20px; text-decoration: none; }
+        .header-logo-big {
+            width: 65px; height: 65px; border-radius: 50%;
+            border: 2px solid var(--text-gold); overflow: hidden;
+            box-shadow: 0 0 20px rgba(232, 198, 136, 0.15);
+        }
+        .header-logo-big img { width: 100%; height: 100%; object-fit: cover; }
+        .header-info { display: flex; flex-direction: column; justify-content: center; }
+        .header-brand-name { 
+            font-size: 1.8rem; font-weight: 800; color: #fff; text-transform: uppercase; letter-spacing: 1px; line-height: 1;
+            background: linear-gradient(135deg, #e8c688 0%, #d4af37 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            transition: 0.3s ease;
+        }
+        .header-brand-name:hover { filter: brightness(1.3); transform: scale(1.02); }
+        .header-sub-text { font-size: 0.9rem; color: #ccc; font-weight: 500; margin-top: 5px; }
+        .header-nav { display: flex; gap: 15px; }
+        .nav-btn {
+            padding: 12px 28px; background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 50px;
+            color: #ccc; text-decoration: none; font-size: 0.9rem; font-weight: 600;
+            text-transform: uppercase; letter-spacing: 1px; transition: all 0.3s ease;
+        }
+        .nav-btn:hover {
+            background: var(--text-gold); color: #000; border-color: var(--text-gold);
+            transform: translateY(-3px); box-shadow: 0 10px 20px rgba(232, 198, 136, 0.2);
+        }
+
+        /* --- 4. HERO --- */
+        .hero { 
+            height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center;
+            text-align: center; padding-top: 60px; /* Slight adjust for layout */
+            overflow: hidden; /* Important for ticker */
+        }
+        .hero-pill {
+            padding: 8px 20px; background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1); border-radius: 50px;
+            font-size: 0.8rem; letter-spacing: 1px; text-transform: uppercase; color: var(--text-gold);
+            margin-bottom: 25px; backdrop-filter: blur(10px);
+            opacity: 0; animation: fadeUp 1s var(--ease-smooth) forwards 0.2s;
+        }
+        .hero h1 { font-size: 5rem; line-height: 1.1; margin-bottom: 25px; }
+        .hero-brand {
+            display: block; font-family: sans-serif; font-weight: 800;
+            background: linear-gradient(90deg, #d4af37 0%, #fff 50%, #d4af37 100%); background-size: 200% auto;
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 10px;
+            opacity: 0; transform: translateY(40px); animation: fadeUp 1s var(--ease-smooth) forwards 0.4s, shine 5s linear infinite;
+        }
+        .hero-tagline {
+            display: block; font-family: 'Times New Roman', serif; font-weight: 400; color: #fff;
+            opacity: 0; transform: translateY(40px); animation: fadeUp 1s var(--ease-smooth) forwards 0.6s;
+        }
+        
+        /* NEW TICKER STYLES */
+        .ticker-wrap {
+            width: 100%;
+            overflow: hidden;
+            white-space: nowrap;
+            background: rgba(255, 255, 255, 0.03); /* Subtle glass strip */
+            border-top: 1px solid rgba(232, 198, 136, 0.2); /* Faint Gold Border */
+            border-bottom: 1px solid rgba(232, 198, 136, 0.2);
+            padding: 15px 0;
+            margin-top: 30px;
+            opacity: 0;
+            animation: fadeUp 1s var(--ease-smooth) forwards 0.8s;
+        }
+
+        .ticker {
+            display: inline-block;
+            animation: marquee 25s linear infinite;
+        }
+
+        .ticker-item {
+            display: inline-block;
+            font-size: 1.1rem;
+            color: var(--text-grey);
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            padding: 0 40px; /* Spacing between items */
+        }
+        
+        .ticker-gold { color: var(--text-gold); font-weight: bold; margin: 0 5px; }
+
+        @keyframes marquee {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
+
+        .scroll-indicator { position: absolute; bottom: 40px; opacity: 0; animation: fadeIn 1s ease forwards 1.5s; }
+        .mouse { width: 26px; height: 42px; border: 2px solid rgba(255,255,255,0.3); border-radius: 20px; position: relative; }
+        .wheel { width: 4px; height: 8px; background: var(--text-gold); border-radius: 2px; position: absolute; top: 8px; left: 50%; transform: translateX(-50%); animation: scroll 2s infinite; }
+
+        @keyframes fadeUp { to { opacity: 1; transform: translateY(0); } }
+        @keyframes fadeIn { to { opacity: 0.6; } }
+        @keyframes shine { to { background-position: 200% center; } }
+        @keyframes scroll { 0% { transform: translate(-50%, 0); opacity: 1; } 100% { transform: translate(-50%, 15px); opacity: 0; } }
+
+        /* --- 5. HEADINGS --- */
+        section { padding: 30px 0; margin-bottom: 20px; } 
+        .section-header-area { max-width: 1400px; margin: 0 auto 30px auto; padding: 0 40px; display: flex; justify-content: space-between; align-items: center; }
+        .section-btn-title {
+            display: inline-block; padding: 12px 30px;
+            background: rgba(255,255,255,0.03); border: 1px solid rgba(232, 198, 136, 0.3); border-radius: 100px;
+            font-size: 1.2rem; font-weight: 700; color: var(--text-gold); text-transform: uppercase; letter-spacing: 2px;
+            backdrop-filter: blur(10px);
+        }
+        .scroll-hint { display: none; color: rgba(255,255,255,0.3); font-size: 0.8rem; text-transform: uppercase; letter-spacing: 2px; animation: pulse 2s infinite; }
+        @media(min-width: 768px) { .scroll-hint { display: block; } }
+        @keyframes pulse { 0%, 100% { opacity: 0.3; } 50% { opacity: 0.8; transform: translateX(5px); } }
+
+        /* --- 6. BUTTER SMOOTH GALLERY (UPDATED FOR NATURAL SIZE) --- */
+        .gallery-wrapper {
+            width: 100%; 
+            overflow-x: auto; 
+            padding: 20px 0 60px 0; 
+            scroll-snap-type: x mandatory; 
+            -webkit-overflow-scrolling: touch; 
+            scrollbar-width: none;
+        }
+        .gallery-wrapper::-webkit-scrollbar { display: none; }
+
+        .carousel-track {
+            display: flex; gap: 30px; padding: 0 5%; width: max-content;
+            align-items: flex-end; 
+        }
+
+        .card-item {
+            position: relative; flex: 0 0 auto; 
+            scroll-snap-align: center; 
+            border-radius: 16px; cursor: pointer;
+            transition: transform 0.4s var(--ease-smooth);
+            width: auto; 
+        }
+
+        .card-inner {
+            height: 100%;
+            width: auto;
+            border-radius: 16px; overflow: hidden;
+            border: 1px solid var(--border-light);
+            background: rgba(255,255,255,0.03);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+            transition: border-color 0.4s, box-shadow 0.4s;
+            display: flex; 
+        }
+        
+        .card-inner img { 
+            width: auto; 
+            height: 100%; 
+            object-fit: contain; 
+            display: block; 
+            transition: transform 0.6s var(--ease-smooth); 
+        }
+
+        .card-item:hover {
+            transform: translateY(-10px); 
+            z-index: 10;
+        }
+        .card-item:hover .card-inner {
+            border-color: var(--text-gold);
+            box-shadow: 0 20px 60px rgba(232, 198, 136, 0.2); 
+        }
+        .card-item:hover img {
+            transform: scale(1.05); 
+        }
+
+        /* --- UPDATED SIZES --- */
+        .s-invite { height: 450px; width: auto; }
+        .s-thumb { height: 200px; width: auto; }
+        .s-biz { height: 220px; width: auto; }
+        .s-prod { height: 350px; width: auto; }
+
+        /* --- 7. ABOUT & CONTACT --- */
+        .split-section {
+            display: grid; grid-template-columns: 1.3fr 0.7fr;
+            gap: 30px; max-width: 1200px; margin: 40px auto; padding: 0 20px;
+        }
+        .pro-panel {
+            background: var(--glass-panel); border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 24px; padding: 40px; backdrop-filter: blur(30px);
+            display: flex; flex-direction: column; justify-content: space-between;
+            transition: transform 0.5s var(--ease-smooth);
+        }
+        .pro-panel:hover { transform: translateY(-10px); border-color: rgba(232, 198, 136, 0.3); box-shadow: 0 20px 60px rgba(0,0,0,0.5); }
+        .panel-head { color: var(--text-gold); font-size: 1.5rem; margin-bottom: 15px; }
+        .panel-text { color: #ccc; line-height: 1.6; margin-bottom: 20px; font-size: 1rem; }
+        .contact-details { margin-top: 10px; padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.1); }
+        .contact-row { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; color: #ddd; }
+        .contact-row span { color: var(--text-gold); font-weight: bold; min-width: 80px;}
+        .about-signature { margin-top: 20px; }
+        .sig-name { font-size: 1.2rem; color: #fff; font-weight: 800; letter-spacing: 0.5px; }
+        .sig-role { font-size: 0.85rem; color: var(--text-gold); font-weight: 600; text-transform: uppercase; margin-top: 3px; }
+        input, textarea {
+            width: 100%; padding: 12px; background: rgba(0,0,0,0.3);
+            border: 1px solid #444; border-radius: 8px; color: #fff;
+            margin-bottom: 10px; font-family: inherit; font-size: 0.9rem;
+        }
+        input:focus, textarea:focus { outline: none; border-color: var(--text-gold); }
+        .btn-main {
+            width: 100%; padding: 14px; background: var(--text-gold);
+            color: #000; font-weight: bold; border: none; border-radius: 8px;
+            cursor: pointer; font-size: 1rem; transition: 0.2s;
+        }
+        .btn-main:hover { opacity: 0.9; transform: scale(1.02); }
+
+        /* --- 8. FOOTER --- */
+        .signature-footer { text-align: center; padding: 40px 20px; margin-top: 20px; border-top: 1px solid rgba(255,255,255,0.05); display: flex; flex-direction: column; align-items: center; gap: 10px; }
+        .footer-avatar { width: 60px; height: 60px; border-radius: 50%; border: 2px solid rgba(255,255,255,0.1); overflow: hidden; margin-bottom: 5px; }
+        .footer-avatar img { width: 100%; height: 100%; object-fit: cover; }
+        .footer-name { font-size: 1.1rem; font-weight: 600; color: #fff; }
+        .footer-copy { margin-top: 10px; font-size: 0.8rem; color: #555; }
+
+        /* Lightbox */
+        .lightbox { position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.95); z-index: 9999; display: flex; justify-content: center; align-items: center; opacity: 0; pointer-events: none; transition: 0.3s; }
+        .lightbox.active { opacity: 1; pointer-events: all; }
+        .lightbox img { max-width: 90%; max-height: 90%; border-radius: 12px; box-shadow: 0 0 60px rgba(0,0,0,0.8); }
+        .close-btn { position: absolute; top:30px; right:30px; color:#fff; font-size:2.5rem; cursor:pointer; }
+
+        @media(max-width: 768px) {
+            .floating-header { height: 80px; padding: 0 20px; top: 15px; width: 95%; }
+            .header-nav { display: none; }
+            .hero h1 { font-size: 3rem; }
+            .hero-brand { font-size: 3rem; }
+            .split-section { grid-template-columns: 1fr; }
+            .scroll-hint { display: none; }
+            .orb { filter: blur(80px); }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="aurora-container">
+        <div class="orb orb-1"></div>
+        <div class="orb orb-2"></div>
+    </div>
+
+    <header class="floating-header" id="main-header">
+        <div class="header-profile">
+            <div class="header-logo-big"><img src="assets/logo.jpg" alt="Logo"></div>
+            <div class="header-info">
+                <div class="header-brand-name">पत्र HOUSE</div>
+                <div class="header-sub-text">@patrahousee • Founder : Shivansh</div>
+            </div>
+        </div>
+        <nav class="header-nav">
+            <a href="#about" class="nav-btn">About</a>
+            <a href="#contact" class="nav-btn">Contact</a>
+            <a href="#quote" class="nav-btn">Get Quote</a>
+        </nav>
+    </header>
+
+    <div class="lightbox" id="lightbox" onclick="closeLightbox()">
+        <div class="close-btn">&times;</div>
+        <img id="lb-image" src="">
+    </div>
+
+    <div class="hero">
+        <div class="hero-pill">✨ Available for projects</div>
+        <h1>
+            <span class="hero-brand">पत्र House</span>
+            <span class="hero-tagline"> Design, done with intention</span>
+        </h1>
+        
+        <div class="ticker-wrap">
+            <div class="ticker">
+                <div class="ticker-item">• Designing <span class="ticker-gold">•</span> Editing <span class="ticker-gold">•</span> E-invites <span class="ticker-gold">•</span> Thumbnails <span class="ticker-gold">•</span> Business cards <span class="ticker-gold">•</span> Creative<span class="ticker-gold">•</span> पत्र House<span class="ticker-gold">•</span>Product photography</div>
+                <div class="ticker-item">• Designing <span class="ticker-gold">•</span> Editing <span class="ticker-gold">•</span> E-invites <span class="ticker-gold">•</span> Thumbnails <span class="ticker-gold">•</span> Business cards <span class="ticker-gold">•</span> Creative<span class="ticker-gold">•</span> पत्र House<span class="ticker-gold">•</span>Product photography</div>
+            </div>
+        </div>
+
+        <div class="scroll-indicator"><div class="mouse"><div class="wheel"></div></div></div>
+    </div>
+
+    <main id="work">
+        <section>
+            <div class="section-header-area">
+                <div class="section-btn-title">Products & Adds</div>
+                <div class="scroll-hint">Scroll ➝</div>
+            </div>
+            
+            <div class="gallery-wrapper">
+                <div class="carousel-track">
+                    <div class="card-item s-prod" onclick="openLightbox(this)"><div class="card-inner"><img src="assets/product1.jpg" loading="lazy"></div></div>
+                    <div class="card-item s-prod" onclick="openLightbox(this)"><div class="card-inner"><img src="assets/product2.jpg" loading="lazy"></div></div>
+                    <div class="card-item s-prod" onclick="openLightbox(this)"><div class="card-inner"><img src="assets/product3.jpg" loading="lazy"></div></div>
+                    <div class="card-item s-prod" onclick="openLightbox(this)"><div class="card-inner"><img src="assets/product4.jpg" loading="lazy"></div></div>
+                    <div class="card-item s-prod" onclick="openLightbox(this)"><div class="card-inner"><img src="assets/product5.jpg" loading="lazy"></div></div>
+                    <div class="card-item s-prod" onclick="openLightbox(this)"><div class="card-inner"><img src="assets/product6.jpg" loading="lazy"></div></div>
+                    <div class="card-item s-prod" onclick="openLightbox(this)"><div class="card-inner"><img src="assets/product7.jpg" loading="lazy"></div></div>
+                    <div class="card-item s-prod" onclick="openLightbox(this)"><div class="card-inner"><img src="assets/product8.jpg" loading="lazy"></div></div>
+                    <div class="card-item s-prod" onclick="openLightbox(this)"><div class="card-inner"><img src="assets/product9.jpg" loading="lazy"></div></div>
+                    <div class="card-item s-prod" onclick="openLightbox(this)"><div class="card-inner"><img src="assets/product10.jpg" loading="lazy"></div></div>
+                    <div class="card-item s-prod" onclick="openLightbox(this)"><div class="card-inner"><img src="assets/product11.jpg" loading="lazy"></div></div>
+                    <div class="card-item s-prod" onclick="openLightbox(this)"><div class="card-inner"><img src="assets/product12.jpg" loading="lazy"></div></div>
+                </div>
+            </div>
+        </section>
+        
+        <section>
+            <div class="section-header-area">
+                <div class="section-btn-title">E-Invitations</div>
+                <div class="scroll-hint">Scroll ➝</div>
+            </div>
+            <div class="gallery-wrapper">
+                <div class="carousel-track">
+                    <div class="card-item s-invite" onclick="openLightbox(this)"><div class="card-inner"><img src="assets/invite1.jpg" loading="lazy"></div></div>
+                    <div class="card-item s-invite" onclick="openLightbox(this)"><div class="card-inner"><img src="assets/invite2.jpg" loading="lazy"></div></div>
+                    <div class="card-item s-invite" onclick="openLightbox(this)"><div class="card-inner"><img src="assets/invite3.jpg" loading="lazy"></div></div>
+                    <div class="card-item s-invite" onclick="openLightbox(this)"><div class="card-inner"><img src="assets/invite4.jpg" loading="lazy"></div></div>
+                    <div class="card-item s-invite" onclick="openLightbox(this)"><div class="card-inner"><img src="assets/invite5.jpg" loading="lazy"></div></div>
+                    <div class="card-item s-invite" onclick="openLightbox(this)"><div class="card-inner"><img src="assets/invite6.jpg" loading="lazy"></div></div>
+                    <div class="card-item s-invite" onclick="openLightbox(this)"><div class="card-inner"><img src="assets/invite7.jpg" loading="lazy"></div></div>
+                    <div class="card-item s-invite" onclick="openLightbox(this)"><div class="card-inner"><img src="assets/invite8.jpg" loading="lazy"></div></div>
+                    <div class="card-item s-invite" onclick="openLightbox(this)"><div class="card-inner"><img src="assets/invite9.jpg" loading="lazy"></div></div>
+                    <div class="card-item s-invite" onclick="openLightbox(this)"><div class="card-inner"><img src="assets/invite10.jpg" loading="lazy"></div></div>
+                    <div class="card-item s-invite" onclick="openLightbox(this)"><div class="card-inner"><img src="assets/invite11.jpg" loading="lazy"></div></div>
+                    <div class="card-item s-invite" onclick="openLightbox(this)"><div class="card-inner"><img src="assets/invite12.jpg" loading="lazy"></div></div>
+                </div>
+            </div>
+        </section>
+
+        <section>
+            <div class="section-header-area">
+                <div class="section-btn-title">Thumbnails</div>
+                <div class="scroll-hint">Scroll ➝</div>
+            </div>
+
+            <div class="gallery-wrapper">
+                <div class="carousel-track">
+                    <div class="card-item s-thumb" onclick="openLightbox(this)"><div class="card-inner"><img src="assets/thumb1.jpg" loading="lazy"></div></div>
+                    <div class="card-item s-thumb" onclick="openLightbox(this)"><div class="card-inner"><img src="assets/thumb2.jpg" loading="lazy"></div></div>
+                    <div class="card-item s-thumb" onclick="openLightbox(this)"><div class="card-inner"><img src="assets/thumb3.jpg" loading="lazy"></div></div>
+                    <div class="card-item s-thumb" onclick="openLightbox(this)"><div class="card-inner"><img src="assets/thumb4.jpg" loading="lazy"></div></div>
+                    <div class="card-item s-thumb" onclick="openLightbox(this)"><div class="card-inner"><img src="assets/thumb5.jpg" loading="lazy"></div></div>
+                    <div class="card-item s-thumb" onclick="openLightbox(this)"><div class="card-inner"><img src="assets/thumb6.jpg" loading="lazy"></div></div>
+                    <div class="card-item s-thumb" onclick="openLightbox(this)"><div class="card-inner"><img src="assets/thumb7.jpg" loading="lazy"></div></div>
+                    <div class="card-item s-thumb" onclick="openLightbox(this)"><div class="card-inner"><img src="assets/thumb8.jpg" loading="lazy"></div></div>
+                </div>
+            </div>
+        </section>
+
+        <section>
+            <div class="section-header-area">
+                <div class="section-btn-title">Business Cards</div>
+                <div class="scroll-hint">Scroll ➝</div>
+            </div>
+
+            <div class="gallery-wrapper">
+                <div class="carousel-track">
+                    <div class="card-item s-biz" onclick="openLightbox(this)"><div class="card-inner"><img src="assets/card1.jpg" loading="lazy"></div></div>
+                    <div class="card-item s-biz" onclick="openLightbox(this)"><div class="card-inner"><img src="assets/card2.jpg" loading="lazy"></div></div>
+                    <div class="card-item s-biz" onclick="openLightbox(this)"><div class="card-inner"><img src="assets/card3.jpg" loading="lazy"></div></div>
+                    <div class="card-item s-biz" onclick="openLightbox(this)"><div class="card-inner"><img src="assets/card4.jpg" loading="lazy"></div></div>
+                    <div class="card-item s-biz" onclick="openLightbox(this)"><div class="card-inner"><img src="assets/card5.jpg" loading="lazy"></div></div>
+                    <div class="card-item s-biz" onclick="openLightbox(this)"><div class="card-inner"><img src="assets/card6.jpg" loading="lazy"></div></div>
+                    <div class="card-item s-biz" onclick="openLightbox(this)"><div class="card-inner"><img src="assets/card7.jpg" loading="lazy"></div></div>
+                    <div class="card-item s-biz" onclick="openLightbox(this)"><div class="card-inner"><img src="assets/card8.jpg" loading="lazy"></div></div>
+                    <div class="card-item s-biz" onclick="openLightbox(this)"><div class="card-inner"><img src="assets/card9.jpg" loading="lazy"></div></div>
+                    <div class="card-item s-biz" onclick="openLightbox(this)"><div class="card-inner"><img src="assets/card10.jpg" loading="lazy"></div></div>
+                    <div class="card-item s-biz" onclick="openLightbox(this)"><div class="card-inner"><img src="assets/card11.jpg" loading="lazy"></div></div>
+                    <div class="card-item s-biz" onclick="openLightbox(this)"><div class="card-inner"><img src="assets/card12.jpg" loading="lazy"></div></div>
+                </div>
+            </div>
+        </section>
+
+
+    </main>
+
+    <div class="split-section" id="about">
+        <div class="pro-panel" id="contact">
+            <div>
+                <h3 class="panel-head">About Us</h3>
+                <p class="panel-text">Patra House is a design studio where ideas take visual form. We create digital invitations, branding materials, 
+                    thumbnails, and promotional designs that are clean, balanced, and purpose-driven. Our work blends creativity with simplicity to
+                     deliver designs that feel refined and effective..</p>
+                <div class="contact-details">
+                    <div class="contact-row"><span>WhatsApp:</span> +91 9026340119</div>
+                    <div class="contact-row"><span>Instagram:</span> @patrahousee</div>
+                </div>
+            </div>
+            <div class="about-signature">
+                <div class="sig-name">Shivansh</div>
+                <div class="sig-role">Co-Founder & Creative Director</div>
+            </div>
+        </div>
+
+        <div class="pro-panel" id="quote">
+            <h3 class="panel-head">Get a Quote</h3>
+        <form
+  name="quote"
+  method="POST"
+  data-netlify="true"
+  action="/thank-you.html"
+>
+                <!-- Required hidden input -->
+                <input type="hidden" name="form-name" value="quote">
+
+                <input type="text" name="name" placeholder="Your Name" required>
+                <input type="tel" name="phone" placeholder="WhatsApp Number" required>
+                <textarea name="message" rows="3" placeholder="I need..." required></textarea>
+
+                <button type="submit" class="btn-main">Send</button>
+        </form>
+        </div>
+    </div>
+
+    <footer class="signature-footer">
+        <div class="footer-avatar"><img src="assets/logo.jpg" alt="Shivansh"></div>
+        <div class="footer-name">Founder : Shivansh</div>
+        <div class="footer-copy">&copy; 2025 पत्र House. All rights reserved.</div>
+    </footer>
+
+    <script>
+        function openLightbox(el) {
+            const img = el.querySelector('img').src;
+            document.getElementById('lb-image').src = img;
+            document.getElementById('lightbox').classList.add('active');
+        }
+        function closeLightbox() {
+            document.getElementById('lightbox').classList.remove('active');
+        }
+        function openLightbox(el) {
+    const img = el.querySelector('img').src;
+    document.getElementById('lb-image').src = img;
+    document.getElementById('lightbox').classList.add('active');
+}
+
+function closeLightbox() {
+    document.getElementById('lightbox').classList.remove('active');
+}
+
+        const header = document.getElementById('main-header');
+        const hero = document.querySelector('.hero');
+        window.addEventListener('scroll', () => {
+            const heroHeight = hero.offsetHeight;
+            if (window.scrollY > (heroHeight * 0.8)) {
+                header.classList.add('header-lifted');
+                header.style.position = 'fixed';
+            } else {
+                header.classList.remove('header-lifted');
+                header.style.position = 'absolute';
+            }
+        });
+    </script>
+</body>
+</html>
